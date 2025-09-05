@@ -28,7 +28,10 @@ export async function POST(req) {
 
     if (file && file.arrayBuffer) {
       const buffer = Buffer.from(await file.arrayBuffer());
-      const webpBuffer = await sharp(buffer).rotate().webp({ quality: 80 }).toBuffer();
+      const webpBuffer = await sharp(buffer)
+        .rotate()
+        .webp({ quality: 80 })
+        .toBuffer();
 
       const imageId = uuidv4();
 
@@ -53,9 +56,15 @@ export async function POST(req) {
       linkedInURL,
     });
 
-    return NextResponse.json({ success: true, member: created }, { status: 201 });
+    return NextResponse.json(
+      { success: true, member: created },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error("Upload error:", error);
-    return NextResponse.json({ error: "Failed to upload image" }, { status: 500 });
+    console.error("Upload error:", error.message, error.stack);
+    return NextResponse.json(
+      { error: "Failed to upload image", details: error.message },
+      { status: 500 }
+    );
   }
 }
